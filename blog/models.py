@@ -1,13 +1,15 @@
 from os import name
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
 
 # Create your models here.
 class Profile(models.Model):
     image = models.ImageField(upload_to="media/",default="avatar.png")
-    portfolio = models.URLField(blank=True)
-    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, related_name='tutor_profile')
+    bio = models.CharField(max_length=255, blank=True)
+    def __str__(self):
+        return f"{self.user.username}'s Profile"
 
     
 class Category(models.Model):
@@ -17,16 +19,6 @@ class Category(models.Model):
         return self.name    
     
 
- 
-class User(AbstractUser):
-    
-    id = models.OneToOneField(
-        Profile,
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
-    def __str__(self) -> str:
-        return self.id
     
 class Post(models.Model):
     title = models.CharField(max_length=200)
